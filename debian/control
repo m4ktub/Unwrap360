@@ -1,10 +1,10 @@
 Source: unwrap360
 Section: user/utilities
 Priority: extra
-Maintainer: Cláudio Gil <claudio.f.gil@gmail.com>
+Maintainer: Claudio Gil <claudio.f.gil@gmail.com>
 Build-Depends: debhelper (>= 5)
 Standards-Version: 3.7.3
-Homepage: http://github.com/m4ktub/Unwrap360
+XB-Homepage: http://github.com/m4ktub/Unwrap360
 XB-Maemo-Icon-26:
  iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAKRWlDQ1BJQ0Mg
  cHJvZmlsZQAAeNqdU2dUU+kWPffe9EJLiICUS29SFQggUkKLgBSRJiohCRBK
@@ -140,7 +140,7 @@ XB-Maemo-Icon-26:
  KqUSDEP+F1OKzIR36E+YAAAAAElFTkSuQmCC
 
 Package: unwrap360
-Architecture: any
+Architecture: i386 armel
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Unwrap 360 degree images.
  Transform images that were taken with a 360 mirror 
