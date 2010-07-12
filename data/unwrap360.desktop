@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Name=Unwrap 360º Images
+Comment=Transform 360 degree images into rectangular ones.
+Exec=/usr/local/bin/Unwrap360
+Icon=unwrap360
+StartupWMClass=Unwrap360
+X-Window-Icon=unwrap360
+X-HildonDesk-ShowInToolbar=true
+X-Osso-Type=application/x-executable
+Terminal=false

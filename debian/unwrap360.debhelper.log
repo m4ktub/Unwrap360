@@ -1,0 +1,4 @@
+dh_installdirs
+dh_link
+dh_fixperms
+dh_installdeb

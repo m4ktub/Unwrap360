@@ -1,0 +1,12 @@
+Unwrap 360
+==========
+
+This simple application intends to be an on-the-road helper for transforming
+360 degree images, taken with some sort of omnidirectional mirror, into 
+rectangular images that can be view with 360 degree image viewers.
+
+It currently does the work it is intended to do but:
+ * it isn't very performant.
+ * it is a big chunk of UI with some unwrapping logic so it's not very
+   portable to other form factors although it is usable.
+ * the generated images have mostly been tested with pan0.net

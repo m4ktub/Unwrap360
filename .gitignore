@@ -1,0 +1,9 @@
+# build system
+build
+build-stamp
+configure-stamp
+Makefile
+
+# user
+Unwrap360.pro.user
+*~
