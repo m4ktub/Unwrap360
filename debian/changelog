@@ -1,5 +1,14 @@
+unwrap360 (0.1-maemo5~1) unstable; urgency=low
+
+  * Changed debian rules to generate a Makefile when needed.
+  * Corrected date formats to be in english and understadable by deb tools.
+  * Other corrections to prepare package for maemo extra-deve repository.
+
+ -- Claudio Gil <claudio.f.gil@gmail.com>  Tue, 13 Jul 2010 23:22:33 +0100
+
 unwrap360 (0.1) unstable; urgency=low
 
   * Initial Release.
+ 
+ -- Claudio Gil <claudio.f.gil@gmail.com>  Sun, 11 Jul 2010 19:34:01 +0100
 
- -- Claudio Gil <claudio.f.gil@gmail.com>  Dom, 11 Jul 2010 19:34:01 +0100
