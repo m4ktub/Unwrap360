@@ -3,7 +3,7 @@ Unwrap 360
 
 This simple application intends to be an on-the-road helper for transforming
 360 degree images, taken with some sort of omnidirectional mirror, into 
-rectangular images that can be view with 360 degree image viewers.
+rectangular images that can be viewed with 360 degree image viewers.
 
 It currently does the work it is intended to do but:
  * it isn't very performant
