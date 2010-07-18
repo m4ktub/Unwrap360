@@ -1,0 +1,87 @@
+General Roadmap towards 1.0
+===========================
+
+Here are presented the features the program must have before being labeled 
+with the major version 1.0. It also attempts to divide those features through
+out all the minor versions.
+
+Version 1.0
+~~~~~~~~~~~
+
+ * Image Unwrapping
+   [x] Unwrap 360 degree images into rectangular images of several sizes.
+   [x] Allow the usual interpolations: neirest neighbor, bilinear, and bicubic.
+   [ ] Suport equirectangular image output.
+   [x] Save resulting image.
+ * Settings
+   [x] Vertical FOV
+   [x] Final image size
+   [x] Scaling algorithm
+   [x] Save settings between invocations.
+   [ ] Configure color to fill blank spots in equirectangular outputs.
+ * Video Unwraping
+   [ ] Support 360 vídeos and unwrap frame by frame into a final rectangular 
+	video.
+   [ ] Allow generating equirectangular videos.
+ * Viewer
+   [ ] Viewer of unwrapped images.
+   [ ] Viewer of unwrapped videos.
+   [ ] Support multiple projections: planar, cube, cilinder, sphere.
+ * Platform support
+   [ ] Decent interface in the desktop.
+   [ ] Decent interface in the N900.
+
+Version 0.7
+~~~~~~~~~~~
+
+ * Platform support
+   [ ] Decent interface in the desktop.
+
+Version 0.6
+~~~~~~~~~~~
+
+ * Platform support
+   [ ] Decent interface in the N900.
+
+Version 0.5
+~~~~~~~~~~~
+
+ * Viewer
+   [ ] Viewer of unwrapped videos.
+
+Version 0.4
+~~~~~~~~~~~
+
+ * Video Unwraping
+   [ ] Support 360 vídeos and unwrap frame by frame into a final rectangular 
+	video.
+   [ ] Allow generating equirectangular videos.
+
+Version 0.3
+~~~~~~~~~~~
+
+ * Viewer
+   [ ] Viewer of unwrapped images.
+   [ ] Support multiple projections: planar, cube, cilinder, sphere.
+
+Version 0.2
+~~~~~~~~~~~
+
+ * Image Unwrapping
+   [ ] Suport equirectangular image output.
+ * Settings
+   [ ] Configure color to fill blank spots in equirectangular outputs.
+
+Version 0.1
+~~~~~~~~~~~
+
+ * Image Unwrapping
+   [x] Unwrap 360 degree images into rectangular images of several sizes.
+   [x] Allow the usual interpolations: neirest neighbor, bilinear, and bicubic.
+   [x] Save resulting image.
+ * Settings   
+   [x] Vertical FOV
+   [x] Final image size
+   [x] Scaling algorithm
+   [x] Save settings between invocations.
+
