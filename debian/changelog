@@ -1,3 +1,9 @@
+unwrap360 (0.1.1-maemo5~1) unstable; urgency=low
+
+  * Packaging new improvements: bicubic artifacts, performance.
+
+ -- Claudio Gil <claudio.f.gil@gmail.com>  Wed, 21 Jul 2010 23:11:14 +0100
+
 unwrap360 (0.1-maemo5~2) unstable; urgency=low
 
   * Corrected build dependency to the correct name.
