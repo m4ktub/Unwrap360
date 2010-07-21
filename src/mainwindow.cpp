@@ -30,14 +30,15 @@
 #include "fullscreenexitbutton.h"
 #include "settingsdialog.h"
 
-QRgb identityInterpolation(const QImage& image, float ang, float ro, const QPointF& point);
-QRgb bilinearInterpolation(const QImage& image, float ang, float ro, const QPointF& point);
-QRgb bicubicInterpolation(const QImage& image, float ang, float ro, const QPointF& point);
+QRgb identityInterpolation(const QRgb* pixels, int width, const QPointF& point);
+QRgb bilinearInterpolation(const QRgb* pixels, int width, const QPointF& point);
+QRgb bicubicInterpolation(const QRgb* pixels, int width, const QPointF& point);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_fseButton(0)
+    m_fseButton(0),
+    m_settingsDialog(0)
 {
 
     ui->setupUi(this);
@@ -139,10 +140,14 @@ void MainWindow::unwrap()
     SettingsDialog::ImageInterpolation interpolation = m_settingsDialog->interpolation();
     bool invert = m_settingsDialog->invertFinalImage();
 
+    int sourceWidth = m_source.width();
     int height = m_settingsDialog->resultHeight();
     int width  = m_settingsDialog->resultWidth();
     int pixels = height * width;
     QImage output = QImage(width, height, m_source.format());
+
+    const QRgb* sourcePixels = (const QRgb*) m_source.bits();
+    QRgb* outputPixels = (QRgb*) output.bits();
 
     QPointF center = ui->sourceImage->center();
     qreal innerRadius = ui->sourceImage->innerRadius();
@@ -162,6 +167,8 @@ void MainWindow::unwrap()
         int usedY = invert ? height - (y + 1) : y;
         float ro = innerRadius + ((usedY * (outerRadius - innerRadius))  / height);
 
+        int offset = y * width;
+
         for (int x = 0; !m_cancel && x < width; x++) {
             float ang = (360.0 * x) / width;
 
@@ -174,23 +181,22 @@ void MainWindow::unwrap()
 
             switch (interpolation) {
             case SettingsDialog::NoInterpolation:
-                rgb = identityInterpolation(m_source, ang, ro, point);
+                rgb = identityInterpolation(sourcePixels, sourceWidth, point);
                 break;
             case SettingsDialog::BilinearInterpolation:
-                rgb = bilinearInterpolation(m_source, ang, ro, point);
+                rgb = bilinearInterpolation(sourcePixels, sourceWidth, point);
                 break;
             case SettingsDialog::BicubicInterpolation:
-                rgb = bicubicInterpolation(m_source, ang, ro, point);
+                rgb = bicubicInterpolation(sourcePixels, sourceWidth, point);
                 break;
             default:
                 rgb = qRgb(0, 0, 0);
             }
 
-            output.setPixel(x, y, rgb);
+            outputPixels[offset++] = rgb;
 
-            int progress = 100.0 * ((float) ((y * width) + x)) / pixels;
+            int progress = 100.0 * ((float) offset) / pixels;
             ui->progressBar->setValue(progress);
-            QApplication::processEvents();
         }
     }
 

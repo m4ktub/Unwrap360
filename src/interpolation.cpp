@@ -21,116 +21,47 @@
  * IN THE SOFTWARE.
  *****************************************************************************/
 
-#include <QImage>
 #include <QPointF>
 #include <QRgb>
-#include <QGenericMatrix>
-#include <QMatrix2x2>
 #include <QMatrix4x4>
 
-QRgb identityInterpolation(const QImage& image, float ang, float ro, const QPointF& point)
+/**
+ * Nearest neighbor interpolation.
+ */
+QRgb identityInterpolation(const QRgb* pixels, int width, const QPointF& point)
 {
-    Q_UNUSED(ang);
-    Q_UNUSED(ro);
+    QPoint p = point.toPoint();
 
-    return image.pixel(point.toPoint());
+    int x = p.x();
+    int y = p.y();
+
+    int pos = y * width + x;
+
+    return pixels[pos];
 }
 
-QRgb bilinearInterpolation_avg(const QImage& image, float ang, float ro, const QPointF& point0)
+/**
+ * Bilinear interpolation.
+ */
+QRgb bilinearInterpolation(const QRgb* pixels, int width, const QPointF& point)
 {
-    Q_UNUSED(ro);
+    QPoint p = point.toPoint();
 
-    QTransform transform;
-    transform.rotate(ang);
+    int x = p.x();
+    int y = p.y();
 
-    QPointF point1 = transform.map(QPointF( 1,  0)) + point0;
-    QPointF point2 = transform.map(QPointF(-1,  0)) + point0;
-    QPointF point3 = transform.map(QPointF( 0,  1)) + point0;
-    QPointF point4 = transform.map(QPointF( 0, -1)) + point0;
-    QPointF point5 = transform.map(QPointF( 1,  1)) + point0;
-    QPointF point6 = transform.map(QPointF( 1, -1)) + point0;
-    QPointF point7 = transform.map(QPointF(-1,  1)) + point0;
-    QPointF point8 = transform.map(QPointF(-1,  1)) + point0;
+    qreal dx = qAbs(point.x() - x);
+    qreal dy = qAbs(point.y() - y);
 
-    QRgb rgb0 = image.pixel(point0.toPoint());
-    QRgb rgb1 = image.pixel(point1.toPoint());
-    QRgb rgb2 = image.pixel(point2.toPoint());
-    QRgb rgb3 = image.pixel(point3.toPoint());
-    QRgb rgb4 = image.pixel(point4.toPoint());
-    QRgb rgb5 = image.pixel(point5.toPoint());
-    QRgb rgb6 = image.pixel(point6.toPoint());
-    QRgb rgb7 = image.pixel(point7.toPoint());
-    QRgb rgb8 = image.pixel(point8.toPoint());
+    int pos00 =  y * width +  x;
+    int pos01 = pos00 + width;
+    int pos10 = pos00 + 1;
+    int pos11 = pos01 + 1;
 
-    int r = (qRed(rgb0) + qRed(rgb1) + qRed(rgb2) + qRed(rgb3) + qRed(rgb4) + qRed(rgb5) + qRed(rgb6) + qRed(rgb7) + qRed(rgb8)) / 9;
-    int g = (qGreen(rgb0) + qGreen(rgb1) + qGreen(rgb2) + qGreen(rgb3) + qGreen(rgb4) + qGreen(rgb5) + qGreen(rgb6) + qGreen(rgb7) + qGreen(rgb8)) / 9;
-    int b = (qBlue(rgb0) + qBlue(rgb1) + qBlue(rgb2) + qBlue(rgb3) + qBlue(rgb4) + qBlue(rgb5) + qBlue(rgb6) + qBlue(rgb7) + qBlue(rgb8)) / 9;
-
-    return qRgb(r, g, b);
-}
-
-QRgb bilinearInterpolation_mx(const QImage& image, float ang, float ro, const QPointF& point)
-{
-    Q_UNUSED(ang);
-    Q_UNUSED(ro);
-
-    int x = (int) point.x();
-    int y = (int) point.y();
-
-    qreal dx = point.x() - x;
-    qreal dy = point.y() - y;
-
-    QGenericMatrix<2, 1, qreal> mfx;
-    QGenericMatrix<1, 2, qreal> mfy;
-
-    mfx(0, 0) = 1 - dx;
-    mfx(0, 1) =     dx;
-    mfy(0, 0) = 1 - dy;
-    mfy(1, 0) =     dy;
-
-    QMatrix2x2 mr;
-    QMatrix2x2 mg;
-    QMatrix2x2 mb;
-
-    for (int i=0; i<2; i++) {
-        for (int j=0; j<2; j++) {
-            QPoint p(x + j, y + i);
-            QRgb rgb = image.pixel(p);
-
-            // mx is transposed
-            mr(j, i) = qRed(rgb);
-            mg(j, i) = qGreen(rgb);
-            mb(j, i) = qBlue(rgb);
-        }
-    }
-
-    int r = (mfx * mr * mfy)(0, 0);
-    int g = (mfx * mg * mfy)(0, 0);
-    int b = (mfx * mb * mfy)(0, 0);
-
-    return qRgb(r, g, b);
-}
-
-QRgb bilinearInterpolation(const QImage& image, float ang, float ro, const QPointF& point0)
-{
-    Q_UNUSED(ang);
-    Q_UNUSED(ro);
-
-    int x = (int) point0.x();
-    int y = (int) point0.y();
-
-    qreal dx = point0.x() - x;
-    qreal dy = point0.y() - y;
-
-    QPoint p00((int) x,     (int) y    );
-    QPoint p01((int) x    , (int) y + 1);
-    QPoint p10((int) x + 1, (int) y    );
-    QPoint p11((int) x + 1, (int) y + 1);
-
-    QRgb rgb00 = image.pixel(p00);
-    QRgb rgb01 = image.pixel(p01);
-    QRgb rgb10 = image.pixel(p10);
-    QRgb rgb11 = image.pixel(p11);
+    QRgb rgb00 = pixels[pos00];
+    QRgb rgb10 = pixels[pos10];
+    QRgb rgb01 = pixels[pos01];
+    QRgb rgb11 = pixels[pos11];
 
     qreal f00 = (1-dx)*(1-dy);
     qreal f10 =    dx *(1-dy);
@@ -144,86 +75,91 @@ QRgb bilinearInterpolation(const QImage& image, float ang, float ro, const QPoin
     return qRgb(r, g, b);
 }
 
-float bicubic(QMatrix4x4 p, float x,float y, float x2,float y2, float x3, float y3) {
-  int p00 = p(0, 0);
-  int p10 = p(1, 0);
-  int p20 = p(2, 0);
-  int p30 = p(3, 0);
+/**
+ * Bicubic interpolation.
+ * Adapted from http://www.paulinternet.nl/?page=bicubic [keywords = bicubic interpolation java]
+ */
+qreal bicubic(const QMatrix4x4& p, qreal x, qreal y) {
+    qreal p00 = p(0, 0);
+    qreal p01 = p(0, 1);
+    qreal p02 = p(0, 2);
+    qreal p03 = p(0, 3);
 
-  int p01 = p(0, 1);
-  int p11 = p(1, 1);
-  int p21 = p(2, 1);
-  int p31 = p(3, 1);
+    qreal p10 = p(1, 0);
+    qreal p11 = p(1, 1);
+    qreal p12 = p(1, 2);
+    qreal p13 = p(1, 3);
 
-  int p02 = p(0, 2);
-  int p12 = p(1, 2);
-  int p22 = p(2, 2);
-  int p32 = p(3, 2);
+    qreal p20 = p(2, 0);
+    qreal p21 = p(2, 1);
+    qreal p22 = p(2, 2);
+    qreal p23 = p(2, 3);
 
-  int p03 = p(0, 3);
-  int p13 = p(1, 3);
-  int p23 = p(2, 3);
-  int p33 = p(3, 3);
+    qreal p30 = p(3, 0);
+    qreal p31 = p(3, 1);
+    qreal p32 = p(3, 2);
+    qreal p33 = p(3, 3);
 
-  int a00 =    p11;
-  int a01 =   -p10 +   p12;
-  int a02 =  2*p10 - 2*p11 +   p12 -   p13;
-  int a03 =   -p10 +   p11 -   p12 +   p13;
-  int a10 =   -p01 +   p21;
-  int a11 =    p00 -   p02 -   p20 +   p22;
-  int a12 = -2*p00 + 2*p01 -   p02 +   p03 + 2*p20 - 2*p21 +   p22 -   p23;
-  int a13 =    p00 -   p01 +   p02 -   p03 -   p20 +   p21 -   p22 +   p23;
-  int a20 =  2*p01 - 2*p11 +   p21 -   p31;
-  int a21 = -2*p00 + 2*p02 + 2*p10 - 2*p12 -   p20 +   p22 +   p30 -   p32;
-  int a22 =  4*p00 - 4*p01 + 2*p02 - 2*p03 - 4*p10 + 4*p11 - 2*p12 + 2*p13 + 2*p20 - 2*p21 + p22 - p23 - 2*p30 + 2*p31 - p32 + p33;
-  int a23 = -2*p00 + 2*p01 - 2*p02 + 2*p03 + 2*p10 - 2*p11 + 2*p12 - 2*p13 -   p20 +   p21 - p22 + p23 +   p30 -   p31 + p32 - p33;
-  int a30 =   -p01 +   p11 -   p21 +   p31;
-  int a31 =    p00 -   p02 -   p10 +   p12 +   p20 -   p22 -   p30 +   p32;
-  int a32 = -2*p00 + 2*p01 -   p02 +   p03 + 2*p10 - 2*p11 +   p12 -   p13 - 2*p20 + 2*p21 - p22 + p23 + 2*p30 - 2*p31 + p32 - p33;
-  int a33 =    p00 -   p01 +   p02 -   p03 -   p10 +   p11 -   p12 +   p13 +   p20 -   p21 + p22 - p23 -   p30 +   p31 - p32 + p33;
+    qreal a00 = p11;
+    qreal a01 = -.5*p10 + .5*p12;
+    qreal a02 = p10 - 2.5*p11 + 2*p12 - .5*p13;
+    qreal a03 = -.5*p10 + 1.5*p11 - 1.5*p12 + .5*p13;
+    qreal a10 = -.5*p01 + .5*p21;
+    qreal a11 = .25*p00 - .25*p02 - .25*p20 + .25*p22;
+    qreal a12 = -.5*p00 + 1.25*p01 - p02 + .25*p03 + .5*p20 - 1.25*p21 + p22 - .25*p23;
+    qreal a13 = .25*p00 - .75*p01 + .75*p02 - .25*p03 - .25*p20 + .75*p21 - .75*p22 + .25*p23;
+    qreal a20 = p01 - 2.5*p11 + 2*p21 - .5*p31;
+    qreal a21 = -.5*p00 + .5*p02 + 1.25*p10 - 1.25*p12 - p20 + p22 + .25*p30 - .25*p32;
+    qreal a22 = p00 - 2.5*p01 + 2*p02 - .5*p03 - 2.5*p10 + 6.25*p11 - 5*p12 + 1.25*p13 + 2*p20 - 5*p21 + 4*p22 - p23 - .5*p30 + 1.25*p31 - p32 + .25*p33;
+    qreal a23 = -.5*p00 + 1.5*p01 - 1.5*p02 + .5*p03 + 1.25*p10 - 3.75*p11 + 3.75*p12 - 1.25*p13 - p20 + 3*p21 - 3*p22 + p23 + .25*p30 - .75*p31 + .75*p32 - .25*p33;
+    qreal a30 = -.5*p01 + 1.5*p11 - 1.5*p21 + .5*p31;
+    qreal a31 = .25*p00 - .25*p02 - .75*p10 + .75*p12 + .75*p20 - .75*p22 - .25*p30 + .25*p32;
+    qreal a32 = -.5*p00 + 1.25*p01 - p02 + .25*p03 + 1.5*p10 - 3.75*p11 + 3*p12 - .75*p13 - 1.5*p20 + 3.75*p21 - 3*p22 + .75*p23 + .5*p30 - 1.25*p31 + p32 - .25*p33;
+    qreal a33 = .25*p00 - .75*p01 + .75*p02 - .25*p03 - .75*p10 + 2.25*p11 - 2.25*p12 + .75*p13 + .75*p20 - 2.25*p21 + 2.25*p22 - .75*p23 - .25*p30 + .75*p31 - .75*p32 + .25*p33;
 
-  return
-    a00      + a01 * y      + a02 * y2      + a03 * y3 +
-    a10 * x  + a11 * x  * y + a12 * x  * y2 + a13 * x  * y3 +
-    a20 * x2 + a21 * x2 * y + a22 * x2 * y2 + a23 * x2 * y3 +
-    a30 * x3 + a31 * x3 * y + a32 * x3 * y2 + a33 * x3 * y3;
+    qreal x2 = x * x;
+    qreal x3 = x2 * x;
+    qreal y2 = y * y;
+    qreal y3 = y2 * y;
+
+    return a00 + a01 * y + a02 * y2 + a03 * y3 +
+           a10 * x + a11 * x * y + a12 * x * y2 + a13 * x * y3 +
+           a20 * x2 + a21 * x2 * y + a22 * x2 * y2 + a23 * x2 * y3 +
+           a30 * x3 + a31 * x3 * y + a32 * x3 * y2 + a33 * x3 * y3;
 }
 
-QRgb bicubicInterpolation(const QImage& image, float ang, float ro, const QPointF& point0)
+QRgb bicubicInterpolation(const QRgb* pixels, int width, const QPointF& point)
 {
-    Q_UNUSED(ro);
-
-    QTransform transform;
-    transform.rotate(ang);
-
     QMatrix4x4 mr;
     QMatrix4x4 mg;
     QMatrix4x4 mb;
 
-    for(int y=0; y<4; y++) {
-        for(int x=0; x<4; x++) {
-            QPointF point = transform.map(QPointF(x-2,  y-2)) + point0;
+    QPoint p = point.toPoint();
 
-            QRgb rgb = image.pixel(point.toPoint());
+    int x = p.x();
+    int y = p.y();
 
-            mr(x, y) = qRed(rgb);
-            mg(x, y) = qGreen(rgb);
-            mb(x, y) = qBlue(rgb);
+    for (int j=0; j<4; j++) {
+        int jpos = (y + j - 1) * width;
+
+        for (int i=0; i<4; i++) {
+            int ipos = jpos + (x + i - 1);
+
+            QRgb rgb = pixels[ipos];
+
+            mr(i, j) = qRed(rgb);
+            mg(i, j) = qGreen(rgb);
+            mb(i, j) = qBlue(rgb);
         }
     }
 
-    QPointF dp = point0 - point0.toPoint();
+    qreal dx = point.x() - x;
+    qreal dy = point.y() - y;
 
-    float dx = dp.x();
-    float dy = dp.y();
-    float dx2 = dx * dx;
-    float dx3 = dx2 * dx;
-    float dy2 = dy * dy;
-    float dy3 = dy2 * dy;
+    int r = qRound(bicubic(mr, dx, dy));
+    int g = qRound(bicubic(mg, dx, dy));
+    int b = qRound(bicubic(mb, dx, dy));
 
-    float red   = bicubic(mr, dx, dy, dx2, dy2, dx3, dy3);
-    float green = bicubic(mg, dx, dy, dx2, dy2, dx3, dy3);
-    float blue  = bicubic(mb, dx, dy, dx2, dy2, dx3, dy3);
-
-    return qRgb(qMin(255, qRound(red)), qMin(255, qRound(green)), qMin(255, qRound(blue)));
+    return qRgb(qBound(0, r, 255), qBound(0, g, 255), qBound(0, b, 255));
 }
+
