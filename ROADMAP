@@ -12,7 +12,7 @@ Version 1.0
    [x] Unwrap 360 degree images into rectangular images of several sizes.
    [x] Allow the usual interpolations: neirest neighbor, bilinear, and bicubic.
    [ ] Suport equirectangular image output.
-   [x] Save resulting image.
+   [ ] Allow batch support: process multiple images.
  * Settings
    [x] Vertical FOV
    [x] Final image size
@@ -31,25 +31,25 @@ Version 1.0
    [ ] Decent interface in the desktop.
    [ ] Decent interface in the N900.
 
-Version 0.7
+Version 0.8
 ~~~~~~~~~~~
 
  * Platform support
    [ ] Decent interface in the desktop.
 
-Version 0.6
+Version 0.7
 ~~~~~~~~~~~
 
  * Platform support
    [ ] Decent interface in the N900.
 
-Version 0.5
+Version 0.6
 ~~~~~~~~~~~
 
  * Viewer
    [ ] Viewer of unwrapped videos.
 
-Version 0.4
+Version 0.5
 ~~~~~~~~~~~
 
  * Video Unwraping
@@ -57,12 +57,18 @@ Version 0.4
 	video.
    [ ] Allow generating equirectangular videos.
 
-Version 0.3
+Version 0.4
 ~~~~~~~~~~~
 
  * Viewer
    [ ] Viewer of unwrapped images.
    [ ] Support multiple projections: planar, cube, cilinder, sphere.
+
+Version 0.3
+~~~~~~~~~~~
+
+ * Image Unwrapping
+   [ ] Allow batch support: process multiple images.
 
 Version 0.2
 ~~~~~~~~~~~
@@ -71,6 +77,7 @@ Version 0.2
    [ ] Suport equirectangular image output.
  * Settings
    [ ] Configure color to fill blank spots in equirectangular outputs.
+   [ ] Preserve last used location for open file and start with home.
 
 Version 0.1
 ~~~~~~~~~~~
