@@ -11,16 +11,15 @@ Version 1.0
  * Image Unwrapping
    [x] Unwrap 360 degree images into rectangular images of several sizes.
    [x] Allow the usual interpolations: neirest neighbor, bilinear, and bicubic.
-   [ ] Suport equirectangular image output.
+   [x] Suport equirectangular image output.
    [ ] Allow batch support: process multiple images.
  * Settings
    [x] Vertical FOV
    [x] Final image size
    [x] Scaling algorithm
    [x] Save settings between invocations.
-   [ ] Configure color to fill blank spots in equirectangular outputs.
  * Video Unwraping
-   [ ] Support 360 vídeos and unwrap frame by frame into a final rectangular 
+   [ ] Support 360 videos and unwrap frame by frame into a final rectangular 
 	video.
    [ ] Allow generating equirectangular videos.
  * Viewer
@@ -31,31 +30,23 @@ Version 1.0
    [ ] Decent interface in the desktop.
    [ ] Decent interface in the N900.
 
-Version 0.8
+Version 0.7
 ~~~~~~~~~~~
 
  * Platform support
    [ ] Decent interface in the desktop.
 
-Version 0.7
+Version 0.6
 ~~~~~~~~~~~
 
  * Platform support
    [ ] Decent interface in the N900.
 
-Version 0.6
+Version 0.5
 ~~~~~~~~~~~
 
  * Viewer
    [ ] Viewer of unwrapped videos.
-
-Version 0.5
-~~~~~~~~~~~
-
- * Video Unwraping
-   [ ] Support 360 vídeos and unwrap frame by frame into a final rectangular 
-	video.
-   [ ] Allow generating equirectangular videos.
 
 Version 0.4
 ~~~~~~~~~~~
@@ -67,17 +58,18 @@ Version 0.4
 Version 0.3
 ~~~~~~~~~~~
 
- * Image Unwrapping
-   [ ] Allow batch support: process multiple images.
+ * Video Unwraping
+   [ ] Support 360 videos and unwrap frame by frame into a final rectangular 
+	video.
+   [ ] Allow generating equirectangular videos.
 
 Version 0.2
 ~~~~~~~~~~~
 
  * Image Unwrapping
-   [ ] Suport equirectangular image output.
+   [x] Suport equirectangular image output.
  * Settings
-   [ ] Configure color to fill blank spots in equirectangular outputs.
-   [ ] Preserve last used location for open file and start with home.
+   [x] Preserve last used location for open file and start with home.
 
 Version 0.1
 ~~~~~~~~~~~
