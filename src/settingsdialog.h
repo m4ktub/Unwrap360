@@ -53,6 +53,8 @@ public:
     int finalHeight();
     ImageInterpolation interpolation();
     bool invertFinalImage();
+    bool equiRectangular();
+    QColor equiRectangularFillColor();
 
 public slots:
     void setInnerRadius(qreal radius);

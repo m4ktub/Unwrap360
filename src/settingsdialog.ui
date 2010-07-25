@@ -28,7 +28,7 @@
         <height>364</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QFormLayout" name="formLayout">
        <item row="0" column="0">
         <widget class="QLabel" name="fovLabel">
          <property name="sizePolicy">
@@ -38,7 +38,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>FOV</string>
+          <string>Vertical  FOV</string>
          </property>
          <property name="buddy">
           <cstring>fovSpinBox</cstring>
@@ -107,7 +107,7 @@
              <number>100</number>
             </property>
             <property name="value">
-             <number>50</number>
+             <number>35</number>
             </property>
            </widget>
           </item>
@@ -178,7 +178,33 @@
          </item>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="3" column="1">
+        <widget class="QCheckBox" name="skyUpCheckbox">
+         <property name="text">
+          <string>Sky is up?</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QCheckBox" name="equiRectCheckBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>2</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Equirectangular?</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
         <widget class="QLabel" name="finalSizeLabel">
          <property name="text">
           <string>Final Size</string>
@@ -188,7 +214,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="5" column="1">
         <widget class="QFrame" name="finalSizeFrame">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -215,10 +241,13 @@
              <bool>false</bool>
             </property>
             <property name="suffix">
-             <string> px height</string>
+             <string> px width</string>
+            </property>
+            <property name="minimum">
+             <number>0</number>
             </property>
             <property name="maximum">
-             <number>8000</number>
+             <number>10000</number>
             </property>
             <property name="singleStep">
              <number>100</number>
@@ -234,27 +263,20 @@
              <bool>false</bool>
             </property>
             <property name="suffix">
-             <string> px width</string>
+             <string> px height</string>
             </property>
             <property name="maximum">
-             <number>3000</number>
+             <number>5000</number>
             </property>
             <property name="singleStep">
              <number>100</number>
             </property>
             <property name="value">
-             <number>1000</number>
+             <number>1500</number>
             </property>
            </widget>
           </item>
          </layout>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QCheckBox" name="skyUpCheckbox">
-         <property name="text">
-          <string>Sky is up?</string>
-         </property>
         </widget>
        </item>
       </layout>
@@ -333,8 +355,8 @@
    <slot>updateSizeLabel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>153</x>
-     <y>64</y>
+     <x>140</x>
+     <y>36</y>
     </hint>
     <hint type="destinationlabel">
      <x>156</x>
@@ -349,8 +371,8 @@
    <slot>updateSizeLabel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>275</x>
-     <y>180</y>
+     <x>279</x>
+     <y>66</y>
     </hint>
     <hint type="destinationlabel">
      <x>275</x>
@@ -365,8 +387,8 @@
    <slot>updateFinalHeightRatio()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>126</x>
-     <y>46</y>
+     <x>130</x>
+     <y>36</y>
     </hint>
     <hint type="destinationlabel">
      <x>125</x>
@@ -381,8 +403,8 @@
    <slot>updateFinalHeightRatio()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>217</x>
-     <y>312</y>
+     <x>199</x>
+     <y>196</y>
     </hint>
     <hint type="destinationlabel">
      <x>213</x>
@@ -397,12 +419,28 @@
    <slot>updateFinalWidthRatio()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>421</x>
-     <y>338</y>
+     <x>199</x>
+     <y>222</y>
     </hint>
     <hint type="destinationlabel">
      <x>417</x>
      <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>equiRectCheckBox</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>updateFinalHeightRatio()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>105</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>102</x>
+     <y>398</y>
     </hint>
    </hints>
   </connection>

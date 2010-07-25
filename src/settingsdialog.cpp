@@ -22,7 +22,8 @@
  *****************************************************************************/
 
 #include <QDebug>
-#include <QRadialGradient>
+#include <QPalette>
+#include <QColorDialog>
 
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
@@ -83,6 +84,16 @@ bool SettingsDialog::invertFinalImage()
     return ui->skyUpCheckbox->isChecked();
 }
 
+bool SettingsDialog::equiRectangular()
+{
+    return ui->equiRectCheckBox->isChecked();
+}
+
+QColor SettingsDialog::equiRectangularFillColor()
+{
+    return Qt::black;
+}
+
 SettingsDialog::ImageInterpolation SettingsDialog::interpolation()
 {
     return (ImageInterpolation) ui->interpolationComboBox->currentIndex();
@@ -95,7 +106,9 @@ void SettingsDialog::updateSizeLabel()
 
 void SettingsDialog::updateFinalHeightRatio()
 {
-    int height = (ui->finalWidthSpinBox->value() * fov()) / 360;
+    int f = equiRectangular() ? 180 : fov();
+
+    int height = (ui->finalWidthSpinBox->value() * f) / 360;
     ui->finalHeightSpinBox->blockSignals(true);
     ui->finalHeightSpinBox->setValue(height);
     ui->finalHeightSpinBox->blockSignals(false);
@@ -103,7 +116,9 @@ void SettingsDialog::updateFinalHeightRatio()
 
 void SettingsDialog::updateFinalWidthRatio()
 {
-    int width = (ui->finalHeightSpinBox->value() * 360) / fov();
+    int f = equiRectangular() ? 180 : fov();
+
+    int width = (ui->finalHeightSpinBox->value() * 360) / f;
     ui->finalWidthSpinBox->blockSignals(true);
     ui->finalWidthSpinBox->setValue(width);
     ui->finalWidthSpinBox->blockSignals(false);
@@ -112,22 +127,12 @@ void SettingsDialog::updateFinalWidthRatio()
 void SettingsDialog::setInnerRadius(qreal radius)
 {
     m_innerRadius = radius;
-
-    if (m_outerRadius != 0) {
-        ui->focalPointSpinBox->setMinimum((m_innerRadius * 100) / m_outerRadius);
-    }
-
     updateSizeLabel();
 }
 
 void SettingsDialog::setOuterRadius(qreal radius)
 {
     m_outerRadius = radius;
-
-    if (m_outerRadius != 0) {
-        ui->focalPointSpinBox->setMinimum((m_innerRadius * 100) / m_outerRadius);
-    }
-
     updateSizeLabel();
 }
 
@@ -137,6 +142,7 @@ void SettingsDialog::loadValues()
     ui->fovSpinBox->setValue(m_settings.value("fov", fov()).toInt());
     ui->focalPointSpinBox->setValue(m_settings.value("focalPercent", focalPointPercent()).toInt());
     ui->interpolationComboBox->setCurrentIndex(m_settings.value("interpolationOption", interpolation()).toInt());
+    ui->equiRectCheckBox->setChecked(m_settings.value("equiRectangular", equiRectangular()).toBool());
     ui->finalHeightSpinBox->setValue(m_settings.value("finalHeight", finalHeight()).toInt());
     ui->finalWidthSpinBox->setValue(m_settings.value("finalWidth", finalWidth()).toInt());
     ui->skyUpCheckbox->setChecked(m_settings.value("invert", invertFinalImage()).toBool());
@@ -149,6 +155,7 @@ void SettingsDialog::saveValues()
     m_settings.setValue("fov", fov());
     m_settings.setValue("focalPercent", focalPointPercent());
     m_settings.setValue("interpolationOption", (int) interpolation());
+    m_settings.setValue("equiRectangular", equiRectangular());
     m_settings.setValue("finalHeight", finalHeight());
     m_settings.setValue("finalWidth", finalWidth());
     m_settings.setValue("invert", invertFinalImage());

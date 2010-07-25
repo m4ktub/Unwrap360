@@ -69,13 +69,23 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::loadImage() {
-    QString path = QFileDialog::getOpenFileName(
-            this,
-            tr("Choose 360º Image"),
-            QString(),
-            tr("Image (*.jpg *.jpeg *.tif *.tiff);;Any (*.*)")
-    );
+    QSettings settings;
+    QString dir = settings.value("defaultDir", QDir::homePath()).toString();
 
+    QFileDialog dialog(this);
+    dialog.setWindowTitle(trUtf8("Choose 360º Image"));
+    dialog.setDirectory(dir);
+    dialog.setFileMode(QFileDialog::ExistingFile);
+    dialog.setFilter(tr("Image (*.jpg *.jpeg *.tif *.tiff);;Any (*.*)"));
+
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    dir = dialog.directory().absolutePath();
+    settings.setValue("defaultDir", dir);
+
+    QString path = dialog.selectedFiles().first();
     if (path.isEmpty()) {
         return;
     }
@@ -86,7 +96,7 @@ void MainWindow::loadImage() {
     }
 
     if (!loaded) {
-        QMessageBox::information(QApplication::desktop(), tr("Load 360 Image"), tr("Failed to load selected image."), QMessageBox::NoButton);
+        QMessageBox::information(QApplication::desktop(), trUtf8("Load 360º Image"), tr("Failed to load selected image."), QMessageBox::NoButton);
     }
 }
 
@@ -174,7 +184,7 @@ void MainWindow::unwrap()
 
             transform.reset();
             transform.scale(ro, ro);
-            transform.rotate(ang);
+            transform.rotate(-ang); // mirrors reflect
 
             QPointF point = transform.map(referencePoint) + center;
             QRgb rgb;
@@ -201,10 +211,20 @@ void MainWindow::unwrap()
     }
 
     if (!m_cancel) {
-        // final scale
         int finalWidth = m_settingsDialog->finalWidth();
         int finalHeight = m_settingsDialog->finalHeight();
-        m_result = output.scaled(QSize(finalWidth, finalHeight), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
+        qreal factor = ((float) (m_settingsDialog->equiRectangular() ? m_settingsDialog->fov() : 180)) / 180.0;
+        int scaledWidth = finalWidth;
+        int scaledHeight = finalHeight * factor;
+
+        QImage finalScaled = output.scaled(QSize(scaledWidth, scaledHeight), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
+        m_result = QImage(QSize(finalWidth, finalHeight), output.format());
+
+        QPainter p(&m_result);
+        p.fillRect(m_result.rect(), m_settingsDialog->equiRectangularFillColor());
+        p.drawImage(QPoint(0, (finalHeight - scaledHeight) / 2), finalScaled);
     }
 
     ui->cancelButton->setVisible(false);
@@ -243,7 +263,7 @@ void MainWindow::saveResultImage() {
         return;
     }
 
-    bool saved = m_result.save(path, 0, 80);
+    bool saved = m_result.save(path, 0, 90);
     if (! saved) {
         QMessageBox::information(QApplication::desktop(), tr("Load 360 Image"), tr("Failed to save image in the specified location."), QMessageBox::NoButton);
     }
