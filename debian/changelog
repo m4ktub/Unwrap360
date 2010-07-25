@@ -1,3 +1,9 @@
+unwrap360 (0.2.0-maemo5~1) unstable; urgency=low
+
+  * Package of version that includes equirectangular image output.
+
+ -- Claudio Gil <claudio.f.gil@gmail.com>  Sun, 25 Jul 2010 01:40:20 +0100
+
 unwrap360 (0.1.1-maemo5~2) unstable; urgency=low
 
   * Corrected change log. Edited with the wrong editor introduced format
