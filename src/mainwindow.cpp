@@ -72,23 +72,19 @@ void MainWindow::loadImage() {
     QSettings settings;
     QString dir = settings.value("defaultDir", QDir::homePath()).toString();
 
-    QFileDialog dialog(this);
-    dialog.setWindowTitle(trUtf8("Choose 360º Image"));
-    dialog.setDirectory(dir);
-    dialog.setFileMode(QFileDialog::ExistingFile);
-    dialog.setFilter(tr("Image (*.jpg *.jpeg *.tif *.tiff);;Any (*.*)"));
+    QString path = QFileDialog::getOpenFileName(
+            this,
+            trUtf8("Choose 360º Image"),
+            dir,
+            tr("Image (*.jpg *.jpeg *.tif *.tiff);;Any (*.*)")
+    );
 
-    if (dialog.exec() != QDialog::Accepted) {
-        return;
-    }
-
-    dir = dialog.directory().absolutePath();
-    settings.setValue("defaultDir", dir);
-
-    QString path = dialog.selectedFiles().first();
     if (path.isEmpty()) {
         return;
     }
+
+    dir = QFileInfo(path).dir().absolutePath();
+    settings.setValue("defaultDir", dir);
 
     bool loaded = m_source.load(path);
     if (loaded) {
@@ -253,19 +249,30 @@ void MainWindow::saveResultImage() {
         return;
     }
 
+    QSettings settings;
+    QString dir = settings.value("defaultSaveDir", QDir::homePath()).toString();
+
     QString path = QFileDialog::getSaveFileName(
             this,
             tr("Choose File to Save"),
-            QString(),
-            tr("Image (*.jpg *.jpeg *.tif *.tiff);;Any (*.*)"));
+            dir);
 
     if (path.isEmpty()) {
         return;
     }
 
+    QFileInfo file(path);
+
+    dir = file.dir().absolutePath();
+    settings.setValue("defaultSaveDir", dir);
+
+    if (file.suffix().isEmpty()) {
+        path = path.append(".jpg");
+    }
+
     bool saved = m_result.save(path, 0, 90);
     if (! saved) {
-        QMessageBox::information(QApplication::desktop(), tr("Load 360 Image"), tr("Failed to save image in the specified location."), QMessageBox::NoButton);
+        QMessageBox::information(QApplication::desktop(), trUtf8("Load 360º Image"), tr("Failed to save image in the specified location."), QMessageBox::NoButton);
     }
 }
 
