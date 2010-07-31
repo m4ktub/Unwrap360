@@ -64,14 +64,14 @@ DEFINES += DATADIR=\\\"$$DATADIR\\\" PKGDATADIR=\\\"$$PKGDATADIR\\\"
 INSTALLS += target desktop icons48 icons64
 
 isEmpty(PREFIX) {
-    PREFIX = /usr/local
+    PREFIX = /usr
 }
 
 BINDIR  = $$PREFIX/bin
 DATADIR = $$PREFIX/share
 
 target.path = $$BINDIR
-desktop.path = $$DATADIR/application/hildon
+desktop.path = $$DATADIR/applications/hildon
 desktop.files += data/unwrap360.desktop
 
 icons48.path = $$DATADIR/icons/hicolor/48x48/apps
