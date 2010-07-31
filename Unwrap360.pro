@@ -59,8 +59,6 @@ OTHER_FILES += \
 # Install
 #
 
-DEFINES += DATADIR=\\\"$$DATADIR\\\" PKGDATADIR=\\\"$$PKGDATADIR\\\"
-
 INSTALLS += target desktop icons48 icons64
 
 isEmpty(PREFIX) {
@@ -69,6 +67,12 @@ isEmpty(PREFIX) {
 
 BINDIR  = $$PREFIX/bin
 DATADIR = $$PREFIX/share
+
+isEmpty(PKGDATADIR) {
+    PKGDATADIR = $$DATADIR
+}
+
+DEFINES += DATADIR=\\\"$$DATADIR\\\" PKGDATADIR=\\\"$$PKGDATADIR\\\"
 
 target.path = $$BINDIR
 desktop.path = $$DATADIR/applications/hildon
